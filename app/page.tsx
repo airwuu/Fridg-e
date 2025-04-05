@@ -12,6 +12,8 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
+import ThreeScene from "./ThreeScene/ThreeScene";
+
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
 const auth = getAuth(app)
 const googleProvider = new GoogleAuthProvider()
@@ -28,12 +30,12 @@ export default function Home() {
     <>
     <Navbar/>
     <div>
-      <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-        {/* put stuff here max */}
-        <div className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start border-8 border-red w-full h-full">
-          crazy
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+
+      <div className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start border-8 border-red w-full h-full">
+        <ThreeScene />
           
-        </div>
+      </div>
 
         <div className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
           <Image
