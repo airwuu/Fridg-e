@@ -1,0 +1,4 @@
+prereq
+
+pip install ultralytics
+
