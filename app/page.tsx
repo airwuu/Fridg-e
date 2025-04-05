@@ -20,9 +20,9 @@ export default function Home() {
         <div className="pl-5 flex items-center gap-2">
           <span className="text-lg font-semibold">fridge-chan</span>
         </div>
-        <a className = "pr-5">
+        <div className = "pr-5">
           <Link href="/login">Login</Link>
-        </a>
+        </div>
       </div>
     </header>
     <div>
