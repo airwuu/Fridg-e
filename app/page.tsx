@@ -15,24 +15,21 @@ import {
 export default function Home() {
   return (
     <>
-     <div className="flex flex-row-reverse mr-5 pt-2 ">
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem className=" px-1"> 
-            {<Link href="/login" legacyBehavior passHref >
-              <NavigationMenuLink className="text-xl">
-                Login
-              </NavigationMenuLink>
-            </Link>}
-          </NavigationMenuItem>
-          </NavigationMenuList>
-      </NavigationMenu>
-    </div>
+     <header className="sticky top-0 z-50 w-full border-b bg-background">
+      <div className=" flex h-16 items-center justify-between w-[full] border-3">
+        <div className="pl-5 flex items-center gap-2">
+          <span className="text-lg font-semibold">fridge-chan</span>
+        </div>
+        <a className = "pr-5">
+          <Link href="/login">Login</Link>
+        </a>
+      </div>
+    </header>
     <div>
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       {/* put stuff here max */}
-      <div className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start border-8 border-amber-300 w-full h-full">
-        crazy stuff
+      <div className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start border-8 border-red w-full h-full">
+        crazy
         
       </div>
 
