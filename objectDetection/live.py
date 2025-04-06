@@ -6,7 +6,7 @@ import time
 import numpy as np
 
 # Load YOLO model
-model = YOLO("./model/yolo11m.pt")  # You can change to your custom model if needed
+model = YOLO("./model/yolo11m.pt")  
 
 camera = '/dev/video0'
 

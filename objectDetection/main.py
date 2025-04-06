@@ -8,11 +8,14 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore 
 import test
-import base64
 import bottleAI
+import os
+from dotenv import load_dotenv
 
 
 
+load_dotenv()
+GEM_API_KEY = os.getenv(NEXT_PUBLIC_GEMINI_API_KEY)
 try:
     CRED_PATH = "./fridge.json"  
     cred = credentials.Certificate(CRED_PATH)
@@ -92,12 +95,10 @@ def processBuffer(data):
         print(f"Not enough data for '{most_common_label}' to calculate movement.")
         return
 
-    encoded_images=[]
     if experimental_bottle_recognition and (most_common_label in {"cup", "bottle"}):
         top_imgs = get_top_3_images(data)
         if top_imgs:
-            api_key = "AIzaSyCBDG2I1hdiCD8zGT7lZkGAil0dNr6Cx8M"
-            result = bottleAI.analyze_images_with_gemini(top_imgs, api_key)
+            result = bottleAI.analyze_images_with_gemini(top_imgs, GEM_API_KEY)
             most_common_label = result
             print(result)
 
@@ -143,7 +144,6 @@ while cap.isOpened():
         doorOpen = new_status
         update_firestore_door_status(new_status)
         if not doorOpen:    
-    # Return only cropped images
             print("Door just closed")
             buffer.clear()
             new_data_added = False
@@ -173,14 +173,12 @@ while cap.isOpened():
         cx, cy, _, _ = best_box.xywh.squeeze().tolist()
         coords = best_box.xyxy[0].tolist()
 
-        # Crop the image using YOLO bbox
         x1, y1, x2, y2 = map(int, coords)
         cropped_img = frame[y1:y2, x1:x2]  # Make sure x2 > x1 and y2 > y1
 
         detection_str = f"BEST: {label} with {conf:.2f} confidence at {coords} (center: {cx:.1f}, {cy:.1f})"
         print(detection_str)
 
-        # Add to buffer: label, (cx, cy), conf, and cropped image
         buffer.append((label, (cx, cy), conf, cropped_img))
 
         print(f"test{(label, (cx, cy))}")

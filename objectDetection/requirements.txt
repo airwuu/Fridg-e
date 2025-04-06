@@ -5,3 +5,4 @@ ultralytics
 firebase-admin
 google-genai
 google-generativeai
+python-dotenv
