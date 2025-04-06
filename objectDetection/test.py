@@ -1,4 +1,6 @@
 import time
+import datetime
+import random
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -26,6 +28,8 @@ try:
     print("Firestore client obtained.")
     door_doc_ref = db_client.collection(FRIDGE_COLLECTION_NAME).document(FRIDGE_DOCUMENT_ID)
     print(f"Firestore document reference created for: {door_doc_ref.path}")
+    # items_ref = db_client.collection('users').document('mLdjn5pE3ehCbSiT36Ihiu0u7Un2').collection('items')
+    
 
 except ValueError as e:
     # Handle case where the app might already be initialized (e.g., in some environments)
@@ -70,6 +74,38 @@ def update_firestore_door_status(is_open):
         # You might see permission errors here if the rules are restrictive
         # or network errors if connectivity is lost.
         return False
+
+def add_item(name):
+    try:
+        db = firestore.client()
+        user_id = "mLdjn5pE3ehCbSiT36Ihiu0u7Un2"
+        db_client.collection('users').document(user_id).collection('items')
+        items_ref = db.collection('users').document(user_id).collection('items')
+        
+        item_name = name
+        calories_val = str(random.randint(50, 800))
+        carbon_val = str(random.randint(1, 100))
+        now = datetime.datetime.now(datetime.timezone.utc)
+        date_added_str = now.isoformat()
+        expiration_days = random.randint(7, 90)
+        expiration_date = now + datetime.timedelta(days=expiration_days)
+        expiration_str = expiration_date.isoformat()
+        item_data = {
+                    "name": item_name,
+                    "calories": calories_val,
+                    "carbon": carbon_val,
+                    "date_added": date_added_str,
+                    "expiration": expiration_str,
+                }
+        try:
+            update_time, doc_ref = items_ref.add(item_data)
+            print(f"  Added item: '{item_name}' with ID: {doc_ref.id} (Timestamp: {update_time})")
+            added_count += 1
+
+        except Exception as item_error:
+            print(f"  Error adding item")
+    except Exception as e:
+        print(f"An error occurred while adding items")
 
 # # --- Main Debug Loop ---
 # if __name__ == "__main__":

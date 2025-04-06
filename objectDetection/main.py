@@ -100,6 +100,7 @@ def processBuffer(data):
     print(f"avg_delta_x: {avg_delta_x}")
     if avg_delta_x > 0:
         print(f"{most_common_label} as moved in to the fridge")
+        test.add_item(most_common_label)
     elif avg_delta_x < 0:
         print(f"{most_common_label} as moved out of the fridge")
     else:
