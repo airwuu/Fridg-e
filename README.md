@@ -42,6 +42,7 @@ python3.11-venv
 python3.11-dev
 v4l2loopback-dkms
 v4l2loopback-utils
+> **_NOTE:_**  v4l2loopback is broken on arch at the moment you will need to down grade
 
 ### runing on arch linux
 v4l2-ctl --list-devices
