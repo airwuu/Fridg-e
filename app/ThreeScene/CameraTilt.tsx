@@ -1,9 +1,7 @@
 'use client';
 
-import { Suspense, useRef, useEffect, useState } from 'react';
-import { PerspectiveCamera, PointerLockControls } from '@react-three/drei';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import * as THREE from "three";
+import { useEffect, useState } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
 
 const CameraTilt = () => {
   const { camera } = useThree();

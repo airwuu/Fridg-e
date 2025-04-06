@@ -13,6 +13,7 @@ import Water from "./Water";
 import Fridge from './Fridge';
 
 import CameraTilt from "./CameraTilt";
+import DynamicLights from "./DynamicLights";
 
 const ThreeScene = () => {
   return (
@@ -23,8 +24,8 @@ const ThreeScene = () => {
         rotation={[0, Math.PI / 2, 0]}>
         <CameraTilt />
       </PerspectiveCamera>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1} />
+      
+      <DynamicLights />
       
       <Suspense fallback={null}>
         <Fridge />
