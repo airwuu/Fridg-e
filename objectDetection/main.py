@@ -132,7 +132,6 @@ last_buffer_update = time.time()
 new_data_added =False
 
 
-print("AAA")
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
@@ -144,6 +143,7 @@ while cap.isOpened():
         doorOpen = new_status
         update_firestore_door_status(new_status)
         if not doorOpen:    
+    # Return only cropped images
             print("Door just closed")
             buffer.clear()
             new_data_added = False
