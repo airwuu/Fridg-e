@@ -45,6 +45,7 @@ Optional for remote camera:
     ```
     Note the `/dev/videoX` path for the OBS Virtual Camera.
 
+
 4.  **Configure Camera:**
     * Edit `main.py` and set the camera device variable to the correct `/dev/videoX` path found above.
 

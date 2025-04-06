@@ -1,0 +1,8 @@
+opencv-python
+streamlit
+numpy
+ultralytics
+firebase-admin
+google-genai
+google-generativeai
+python-dotenv
