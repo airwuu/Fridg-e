@@ -12,6 +12,7 @@ import Orange from "./Orange";
 import Apple from "./Apple"; 
 import Pizza from "./Pizza";
 import Water from "./Water";
+import Soda from "./Soda";
 import Fridge from './Fridge';
 
 import CameraTilt from "./CameraTilt";
@@ -101,8 +102,10 @@ const ThreeScene = () => {
         return <Orange key={item.id} />;
       case 'pizza':
         return <Pizza key={item.id} />;
-      case 'can':
+      case 'water':
         return <Water key={item.id} />;
+      case 'soda': 
+        return <Soda key={item.id} />
       default:
         return null;
     }
