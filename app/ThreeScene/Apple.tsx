@@ -8,6 +8,14 @@ const Apple = () => {
   const groupRef = useRef<THREE.Group>(null!);
   const [cubeSize, setCubeSize] = useState(1); // default size
 
+  useEffect(() => {
+    scene.traverse((child: THREE.Object3D) => {
+      if ((child as THREE.Mesh).isMesh) {
+        (child as THREE.Mesh).layers.set(1);
+      }
+    });
+  }, [scene]);
+
   useLayoutEffect(() => {
     if (scene) {
       scene.updateMatrixWorld(true);
@@ -36,7 +44,7 @@ const Apple = () => {
 
       <mesh>
         <boxGeometry args={[cubeSize, cubeSize, cubeSize]} />
-        <meshBasicMaterial wireframe color="red" />
+        <meshBasicMaterial wireframe color="red" visible={false}/>
       </mesh>
 
       <primitive object={scene} rotation={[Math.PI * 2, Math.PI / 0.58, 0]} />

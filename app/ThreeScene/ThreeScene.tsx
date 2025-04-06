@@ -1,9 +1,8 @@
 'use client';
 
-import { Suspense, useRef, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { PerspectiveCamera, PointerLockControls } from '@react-three/drei';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import * as THREE from "three";
+import { Canvas } from '@react-three/fiber';
 
 import Banana from "./Banana";
 import Orange from "./Orange";
@@ -14,6 +13,7 @@ import Fridge from './Fridge';
 
 import CameraTilt from "./CameraTilt";
 import DynamicLights from "./DynamicLights";
+import OutlineEffect from "./OutlineEffect";
 
 const ThreeScene = () => {
   return (
@@ -34,7 +34,9 @@ const ThreeScene = () => {
         <Orange />
         <Pizza />
         <Water />
+        <OutlineEffect />
       </Suspense>
+
 
     </Canvas>
   );

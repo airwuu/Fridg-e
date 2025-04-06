@@ -20,15 +20,17 @@ const Fridge = () => {
   };
 
   useEffect(() => {
-    const duration = 2000; // Animation duration in milliseconds
+    const duration = 2000; 
     let start = null;
 
     const animate = (timestamp) => {
       if (!start) start = timestamp;
+
       const elapsed = timestamp - start;
       const progress = Math.min(elapsed / duration, 1);
       const easedProgress = easeInOutQuad(progress);
-      setDoorRotation(-Math.PI / 1.3 * easedProgress);
+      setDoorRotation(-Math.PI / 1.4 * easedProgress);
+      
       if (progress < 1) {
         requestAnimationFrame(animate);
       }
