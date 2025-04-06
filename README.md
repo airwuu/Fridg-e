@@ -1,4 +1,10 @@
-# fridge
+<img src="https://github.com/user-attachments/assets/2f30a41c-0067-4832-b942-956b9a9363df" width="200">
+<img src="https://github.com/user-attachments/assets/62e9ae09-cdf3-4ea2-899b-b4a77ca779d6" width="500">
+
+Transform your fridge into ✨**Fridg-E**✨ *(yes this is a reference to Wall-E)*. Fridg-E helps you track the items in your fridge to help you reduce the amount of food that gets wasted. 
+
+**Easily trivialize being environomentally conscious while still eating good by letting Fridg-E keep track of your calories, carbon footprint, and even generate recipes that prioritizes using ingredients before they expire.**
+
 ## Setup Webapp Locally
 Prerequisites: `node.js`
 
