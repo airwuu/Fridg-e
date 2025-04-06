@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 
 
 load_dotenv()
-GEM_API_KEY = os.getenv(NEXT_PUBLIC_GEMINI_API_KEY)
+GEM_API_KEY = os.getenv('NEXT_PUBLIC_GEMINI_API_KEY')
 try:
     CRED_PATH = "./fridge.json"  
     cred = credentials.Certificate(CRED_PATH)
@@ -54,7 +54,7 @@ except Exception as e:
 model = YOLO("./model/yolo11m.pt")
 camera = '/dev/video0'
 cap = cv2.VideoCapture(camera)
-DOOR_DELAY = 3
+DOOR_DELAY = 2
 experimental_bottle_recognition = True
 
 whitelist = {
