@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, collection, doc, addDoc, deleteDoc, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, doc, addDoc, deleteDoc, getDocs, onSnapshot } from 'firebase/firestore';
 import { differenceInDays, parseISO, format, isValid } from 'date-fns';
 
 import { Button } from "@/components/ui/button";
@@ -78,13 +78,58 @@ function UserItems() {
     }
   }, [auth, db]);
 
-  useEffect(() => {
-    fetchItems();
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      fetchItems();
-    });
-    return () => unsubscribe();
-  }, [fetchItems]);
+//   useEffect(() => {
+//     fetchItems();
+//     const unsubscribe = auth.onAuthStateChanged((user) => {
+//       fetchItems();
+//     });
+//     return () => unsubscribe();
+//   }, [fetchItems]);
+useEffect(() => {
+       let unsubscribeFirestore = () => {}; // Placeholder for cleanup function
+    
+       // Listen for auth changes directly
+       const unsubscribeAuth = auth.onAuthStateChanged(user => {
+         // Clean up previous Firestore listener before setting up a new one or if logging out
+         unsubscribeFirestore();
+    
+         if (user) {
+           setLoading(true); // Start loading when user is confirmed
+           const userId = user.uid;
+           setUserName(user.displayName || user.email);
+           setUserPhotoURL(user.photoURL);
+           const itemsCollectionRef = collection(db, 'users', userId, 'items');
+    
+           // Set up the real-time listener
+           unsubscribeFirestore = onSnapshot(itemsCollectionRef, (snapshot) => {
+             const itemsData: Item[] = snapshot.docs.map(doc => ({
+               id: doc.id,
+               ...doc.data()
+             } as Item));
+             setItems(itemsData); // Update state with real-time data
+             setLoading(false); // Stop loading after data is received
+           }, (error) => {
+             console.error("Error listening to Firestore:", error);
+             setItems([]); // Clear items on error
+             setLoading(false);
+           });
+    
+         } else {
+           // No user logged in
+           setItems([]);
+           setUserName(null);
+           setUserPhotoURL(null);
+           setLoading(false); // Ensure loading is false if logged out
+         }
+       });
+    
+       // Cleanup function for the effect
+       return () => {
+         unsubscribeAuth(); // Unsubscribe from auth listener
+         unsubscribeFirestore(); // Unsubscribe from Firestore listener
+       };
+     }, [auth, db]); // Re-run effect if auth or db instance changes
+    
 
   useEffect(() => {
     let processedItems = [...items];
@@ -150,7 +195,7 @@ function UserItems() {
       setNewItemDateAdded('');
       setNewItemExpiration('');
 
-      await fetchItems();
+    //   await fetchItems();
     } catch (error) {
       console.error("Error adding item:", error);
     }
@@ -165,7 +210,7 @@ function UserItems() {
 
     try {
       await deleteDoc(itemDocRef);
-      await fetchItems();
+    //   await fetchItems();
     } catch (error) {
       console.error("Error deleting item:", error);
     }
