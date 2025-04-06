@@ -34,3 +34,27 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## server side startup arch or deb
+### pre req 
+python 3.11
+python3.11-venv
+python3.11-dev
+v4l2loopback-dkms
+v4l2loopback-utils
+
+### runing on arch linux
+v4l2-ctl --list-devices
+find dev obs camera
+edit main.py to change path to match /dev/vid*
+make install
+source .venv/bin/activate
+start obs camera 
+run python main.py
+
+
+
+
+
+
+
