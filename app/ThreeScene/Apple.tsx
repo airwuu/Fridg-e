@@ -23,7 +23,7 @@ const Apple = () => {
       const box = new THREE.Box3().setFromObject(scene);
       const center = new THREE.Vector3();
       box.getCenter(center);
-      scene.position.sub(center); // center the model
+      scene.position.sub(center); 
 
       const size = new THREE.Vector3();
       box.getSize(size);

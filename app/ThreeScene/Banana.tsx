@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
@@ -16,15 +16,15 @@ const Banana = () => {
     });
   }, [scene]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (scene) {
-      // center model
+      scene.updateMatrixWorld(true);
+
       const box = new THREE.Box3().setFromObject(scene);
       const center = new THREE.Vector3();
       box.getCenter(center);
-      scene.position.sub(center);
+      scene.position.sub(center); 
 
-      // bounding box
       const size = new THREE.Vector3();
       box.getSize(size);
       const maxDimension = Math.max(size.x, size.y, size.z);
