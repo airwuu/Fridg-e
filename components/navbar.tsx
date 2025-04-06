@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { LogOut } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link" 
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -25,6 +26,7 @@ const googleProvider = new GoogleAuthProvider()
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
@@ -32,6 +34,7 @@ export default function Navbar() {
     })
     return () => unsubscribe()
   }, [])
+
   const handleLogin = async () => {
     try {
       await signInWithPopup(auth, googleProvider)
@@ -39,6 +42,7 @@ export default function Navbar() {
       console.error("Error signing in:", error)
     }
   }
+
   const handleLogout = async () => {
     try {
       await signOut(auth)
@@ -46,6 +50,7 @@ export default function Navbar() {
       console.error("Error signing out:", error)
     }
   }
+
   const getUserInitials = () => {
     if (!user || !user.displayName) return "U"
     return user.displayName
@@ -54,6 +59,7 @@ export default function Navbar() {
       .join("")
       .toUpperCase()
   }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between w-full">
@@ -64,7 +70,12 @@ export default function Navbar() {
           <Image src="/title.png" alt="" width="130" height="50"/>
           </a>
         </div>
-        <div className="pr-5">
+        <div className="pr-5 flex items-center gap-4">
+          {/* {user && (
+            <Link href="/fridge">
+              <Button variant="ghost">Fridge</Button>
+            </Link>
+          )} */}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

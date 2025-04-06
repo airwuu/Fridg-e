@@ -1,8 +1,16 @@
 "use client"
+
 import Image from "next/image";
-import Navbar from "@/components/navbar"
+import Link from "next/link" 
+import { useRouter } from "next/navigation";
+
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, type User } from "firebase/auth"
 import { initializeApp, getApps, getApp } from "firebase/app"
+import Navbar from "@/components/navbar"
+import { motion } from "framer-motion"
+
+import ThreeScene from "./ThreeScene/ThreeScene";
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -11,8 +19,6 @@ const firebaseConfig = {
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
-
-import ThreeScene from "./ThreeScene/ThreeScene";
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
 const auth = getAuth(app)
@@ -26,44 +32,67 @@ export default function Home() {
       console.error("Error signing in:", error)
     }
   }
+
+  const router = useRouter();
+
   return (
     <>
       <Navbar />
       <div className="min-h-screen p-8 pb-20 sm:p-20">
         <div className="grid grid-cols-2 gap-16 items-center justify-items-center font-[family-name:var(--font-geist-sans)]">
+
           <div className="w-full h-full -translate-x-10 md:translate-x-0">
             <ThreeScene />
           </div>
-          <div className="flex flex-col gap-[32px] items-center sm:items-start">
-            <Image
-              className="dark:invert"
-              src="/next.svg"
-              alt="Next.js logo"
-              width={180}
-              height={38}
-              priority
-            />
-            <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-              <li className="mb-2 tracking-[-.01em]">uwu fridge stuff</li>
-              <li className="tracking-[-.01em]">
-                wow save bunch of food by actually eating
-              </li>
-            </ol>
-            <div className="flex gap-4 items-center flex-col sm:flex-row">
-              <a
-                className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-                onClick={handleLogin}
+
+          <div className="flex flex-col gap-3 items-center order-1 md:order-2 min-h-[500px]">
+          {/* logo */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <Image
+                src="/fridge.png"
+                alt="Logo"
+                width={180}
+                height={60}
+                priority
+                className="w-full h-auto"
+              />
+            </motion.div>
+
+            {/* text */}
+            <motion.div
+              className="-mt-3"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <Image
+                src="/title.png"
+                alt="Logo"
+                width={180}
+                height={60}
+                priority
+                className="w-full h-auto"
+              />
+            </motion.div>
+
+            <div className="h-2" />
+
+            {/* button */}
+            <Link href="/fridge">
+              <motion.div
+                className="relative z-10 mt-4 px-6 py-3 bg-foreground text-background rounded-full font-medium hover:bg-[#383838] dark:hover:bg-[#ccc] transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
               >
-                <Image
-                  className="dark:invert"
-                  src="/vercel.svg"
-                  alt="Vercel logomark"
-                  width={20}
-                  height={20}
-                />
-                Sign Up
-              </a>
-            </div>
+                Open My Fridge
+              </motion.div>
+            </Link>
+
           </div>
         </div>
       </div>
