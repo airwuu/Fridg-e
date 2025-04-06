@@ -1,61 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<img src="https://github.com/user-attachments/assets/2f30a41c-0067-4832-b942-956b9a9363df" width="200">
+<img src="https://github.com/user-attachments/assets/62e9ae09-cdf3-4ea2-899b-b4a77ca779d6" width="500">
 
-## Getting Started
+Transform your fridge into ✨**Fridg-E**✨ *(yes this is a reference to Wall-E)*. Fridg-E helps you track the items in your fridge to help you reduce the amount of food that gets wasted. 
 
-First, run the development server:
+**Easily trivialize being environomentally conscious while still eating good by letting Fridg-E keep track of your calories, carbon footprint, and even generate recipes that prioritizes using ingredients before they expire.**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Setup Webapp Locally
+Prerequisites: `node.js`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Clone project and install dependencies:**
+   
+   Run ```git clone``` to clone this repo.
+   Then run ```npm i``` to install all dependencies 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Run project locally:**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   Run ```npm run dev``` or ```npm start```
 
-## Learn More
+## Camera Setup (Linux):
+Prerequisites packages: 
+- python 3.11
+- python3.11-venv
+- python3.11-dev
 
-To learn more about Next.js, take a look at the following resources:
+Optional for remote camera:
+- v4l2loopback-dkms
+- v4l2loopback-utils
+- obs-studio-git
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+*NOTE:  rolling release of `v4l2loopback` is broken on Arch at the moment you will need to downgrade*
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Steps
 
-## Deploy on Vercel
+*NOTE: Make sure to change into the `/objectDetection` directory before doing these steps*
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## server side startup arch or deb
-### pre req 
-python 3.11
-python3.11-venv
-python3.11-dev
-v4l2loopback-dkms
-v4l2loopback-utils
-> **_NOTE:_**  v4l2loopback is broken on arch at the moment you will need to down grade
-
-### runing on arch linux
-v4l2-ctl --list-devices
-find dev obs camera
-edit main.py to change path to match /dev/vid*
-make install
-source .venv/bin/activate
-start obs camera 
-run python main.py
+1.  (Optional Remote Camera) **Setup OBS Virtual Camera:**
+   
+    Open OBS studio and set up a `Browser` source. Input link made from [https://vdo.ninja/](https://vdo.ninja/) on a mobile device with a camera.
+    Start virtual camera.
+    
+3.  (Optional Remote Camera) **Identify OBS Camera Device:**
+    ```bash
+    v4l2-ctl --list-devices
+    ```
+    Note the `/dev/videoX` path for the OBS Virtual Camera.
 
 
+4.  **Configure Camera:**
+    * Edit `main.py` and set the camera device variable to the correct `/dev/videoX` path found above.
 
+5.  **Install:**
+    We've included a make file for quick installation with a virtual python environment
+    ```bash
+    make install
+    ```
 
+6.  **Activate Environment:**
+    ```bash
+    source .venv/bin/activate
+    ```
+7.  Open your firebase project console and generate a new private key as a JSON. Save it into this directory.
 
-
-
+8.  **Run Script:**
+    * Ensure OBS Virtual Camera is running. 
+    * Ensure `.venv` is active.
+    ```bash
+    python main.py
+    ```
