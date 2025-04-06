@@ -1,6 +1,8 @@
 'use client';
 
-import { Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+
+import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 import { PerspectiveCamera, PointerLockControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 
@@ -16,6 +18,31 @@ import DynamicLights from "./DynamicLights";
 import OutlineEffect from "./OutlineEffect";
 
 const ThreeScene = () => {
+  const [doorIsOpen, setDoorIsOpen] = useState(false);
+
+  // firestore door 
+  useEffect(() => {
+    const db = getFirestore();
+    const fridgeDocRef = doc(db, 'fridges', 'main_fridge');
+
+    const unsubscribe = onSnapshot(
+      fridgeDocRef,
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const data = docSnapshot.data();
+          setDoorIsOpen(data.door_is_open === true);
+        }
+      },
+      (error) => {
+        console.error("Error fetching fridge door status:", error);
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   return (
     <Canvas style={{ width: '80vw', height: '80vh' }} orthographic={false}>
       <PerspectiveCamera 
@@ -28,7 +55,7 @@ const ThreeScene = () => {
       <DynamicLights />
       
       <Suspense fallback={null}>
-        <Fridge />
+        <Fridge isOpen={doorIsOpen} />
         <Apple />
         <Banana />
         <Orange />
