@@ -8,8 +8,6 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore 
 import test
-from dotenv import load_dotenv
-import os
 
 
 
@@ -17,9 +15,8 @@ import os
 # gemini firebase thing
 try:
     # Path to your Service Account Key JSON file
-    load_dotenv()
-    cred = os.getenv('NEXT_PUBLIC_FIREBASE_API_KEY')
-
+    CRED_PATH = "./fridge.json"  # <-- !! VERIFY THIS PATH !!
+    cred = credentials.Certificate(CRED_PATH)
     # Initialize the app (no databaseURL needed for Firestore)
     firebase_admin.initialize_app(cred)
     print("Firebase Admin SDK initialized successfully.")
@@ -79,6 +76,35 @@ def isClosed(frame, threshold=2, required_black_ratio=0.7):
 
 def processBuffer(data):
     print("Processing buffer:", data)
+    if not data:
+        print("Buffer is empty.")
+        return
+
+    # Step 1: Find the most common label
+    labels = [label for label, _ in data]
+    most_common_label, _ = Counter(labels).most_common(1)[0]
+
+    # Step 2: Filter entries to only that label
+    filtered = [(cx, cy) for label, (cx, cy) in data if label == most_common_label]
+
+    if len(filtered) < 2:
+        print(f"Not enough data for '{most_common_label}' to calculate movement.")
+        return
+
+    # Step 3: Compute average change in X position (Δx)
+    deltas = [filtered[i+1][0] - filtered[i][0] for i in range(len(filtered)-1)]
+    avg_delta_x = sum(deltas) / len(deltas)
+
+    # Output result
+    print(f"Most common item: {most_common_label}")
+    print(f"avg_delta_x: {avg_delta_x}")
+    if avg_delta_x > 0:
+        print(f"{most_common_label} as moved in to the fridge")
+    elif avg_delta_x < 0:
+        print(f"{most_common_label} as moved out of the fridge")
+    else:
+        print("inconlusive")
+
 
     
 

@@ -5,7 +5,7 @@ from firebase_admin import firestore
 
 # --- Configuration ---
 # Path to your Service Account Key JSON file
-CRED_PATH = "./objectDetection/fridge.json"  # <-- !! VERIFY THIS PATH !!
+CRED_PATH = "./fridge.json"  # <-- !! VERIFY THIS PATH !!
 # Firestore details
 FRIDGE_COLLECTION_NAME = 'fridges'
 FRIDGE_DOCUMENT_ID = 'main_fridge' # ID for THIS specific fridge
