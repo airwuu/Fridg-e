@@ -6,14 +6,14 @@ const Fridge = () => {
   const thickness = 0.1;
   const width = 2;
   const depth = 2;
-  const height = 2.5;
+  const height = 4;
 
   // Group offset (world position of the fridge)
   const offset: [number, number, number] = [-0.8, -0.3, 0];
   const rotation: [number, number, number] = [0, 0, 0];
 
   return (
-    <group position={offset} rotation={rotation}>
+    <group position={offset} rotation={rotation} scale={.1}>
       {/* Floor */}
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[width, thickness, depth]} />
@@ -28,6 +28,11 @@ const Fridge = () => {
 
       {/* Shelf */}
       <mesh position={[0, 1.25, 0]}>
+        <boxGeometry args={[width, thickness, depth]} />
+        <meshStandardMaterial color="white" />
+      </mesh>
+
+      <mesh position={[0, 2.5, 0]}>
         <boxGeometry args={[width, thickness, depth]} />
         <meshStandardMaterial color="white" />
       </mesh>
