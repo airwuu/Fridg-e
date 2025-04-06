@@ -9,7 +9,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore 
 import test
 import base64
-
+import bottleAI
 
 
 
@@ -49,7 +49,7 @@ except Exception as e:
 
 
 model = YOLO("./model/yolo11m.pt")
-camera = '/dev/video2'
+camera = '/dev/video0'
 cap = cv2.VideoCapture(camera)
 DOOR_DELAY = 3
 experimental_bottle_recognition = True
@@ -58,16 +58,6 @@ whitelist = {
     "banana", "apple", "sandwich", "orange", "broccoli", "carrot",
     "hot dog", "pizza", "donut", "cake", "bottle", "cup"
 }
-
-def encode_image_to_base64(image_np):
-    # Encode to JPEG format in memory (no file saved)
-    success, encoded_img = cv2.imencode(".jpg", image_np)
-    if not success:
-        raise ValueError("Failed to encode image")
-
-    # Convert to base64 string for GenAI or any HTTP upload
-    b64 = base64.b64encode(encoded_img.tobytes()).decode("utf-8")
-    return b64
 
 def isClosed(frame, threshold=2, required_black_ratio=0.7):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -80,13 +70,10 @@ def get_top_3_images(data):
     if not data:
         return []
 
-    # Sort buffer by confidence, descending
     sorted_data = sorted(data, key=lambda item: item[2], reverse=True)
 
-    # Extract top 3 (or fewer if not enough)
     top_3 = sorted_data[:3]
 
-    # Return only cropped images
     top_3_images = [entry[3] for entry in top_3]
     return top_3_images
 
@@ -108,10 +95,11 @@ def processBuffer(data):
     encoded_images=[]
     if experimental_bottle_recognition and (most_common_label in {"cup", "bottle"}):
         top_imgs = get_top_3_images(data)
-        for i, img in enumerate(top_imgs):
-            img_b64 = encode_image_to_base64(img)
-            encoded_images.append(img_b64)
-        #call ai functions
+        if top_imgs:
+            api_key = "AIzaSyCBDG2I1hdiCD8zGT7lZkGAil0dNr6Cx8M"
+            result = bottleAI.analyze_images_with_gemini(top_imgs, api_key)
+            most_common_label = result
+            print(result)
 
 
     deltas = [filtered[i+1][0] - filtered[i][0] for i in range(len(filtered)-1)]
@@ -144,6 +132,7 @@ last_buffer_update = time.time()
 new_data_added =False
 
 
+print("AAA")
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
