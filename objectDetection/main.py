@@ -52,7 +52,7 @@ except Exception as e:
 
 
 model = YOLO("./model/yolo11m.pt")
-camera = '/dev/video2'
+camera = '/dev/video0'
 cap = cv2.VideoCapture(camera)
 DOOR_DELAY = 2
 experimental_bottle_recognition = True
