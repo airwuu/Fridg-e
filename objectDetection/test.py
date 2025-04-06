@@ -42,7 +42,7 @@ except ValueError as e:
              print(f"Firestore document reference obtained (post-init check): {door_doc_ref.path}")
     else:
         print(f"Error initializing Firebase Admin SDK: {e}")
-        exit(1) # Exit if initialization fails critically
+        exit(1) 
 except FileNotFoundError:
     print(f"ERROR: Service account key file not found at: {CRED_PATH}")
     print("Please ensure the path is correct and the file exists.")
@@ -97,3 +97,32 @@ def add_item(name):
             print(f"  Error adding item")
     except Exception as e:
         print(f"An error occurred while adding items")
+def delete_oldest_item(name):
+    try:
+        db = firestore.client()
+        user_id = "mLdjn5pE3ehCbSiT36Ihiu0u7Un2" 
+        item_name_to_delete = name 
+        items_ref = db.collection('users').document(user_id).collection('items')
+        print(f"Searching for the oldest item named '{item_name_to_delete}' for user {user_id}...")
+        query = items_ref.where('name', '==', item_name_to_delete) \
+                         .order_by('date_added', direction=firestore.Query.ASCENDING) \
+                         .limit(1)
+        docs = list(query.stream()) 
+        if not docs:
+            print(f"  No item named '{item_name_to_delete}' found for user {user_id}.")
+            return 
+        doc_to_delete = docs[0]
+        doc_id = doc_to_delete.id
+        doc_data = doc_to_delete.to_dict() 
+        item_actual_name = doc_data.get('name', 'N/A')
+        date_added = doc_data.get('date_added', 'N/A')
+        print(f"  Found oldest item: Name='{item_actual_name}', ID='{doc_id}', Added='{date_added}'.")
+        print(f"  Attempting to delete item with ID: {doc_id}...")
+        try:
+            doc_to_delete.reference.delete()
+            print(f"  Successfully deleted item with ID: {doc_id}")
+
+        except Exception as delete_error:
+            print(f"  Error deleting item with ID {doc_id}: {delete_error}")
+    except Exception as e:
+        print(f"An error occurred during the delete process for item '{name}': {e}")

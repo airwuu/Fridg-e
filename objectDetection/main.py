@@ -52,7 +52,7 @@ except Exception as e:
 
 
 model = YOLO("./model/yolo11m.pt")
-camera = '/dev/video0'
+camera = '/dev/video2'
 cap = cv2.VideoCapture(camera)
 DOOR_DELAY = 2
 experimental_bottle_recognition = True
@@ -114,6 +114,7 @@ def processBuffer(data):
         test.add_item(most_common_label)
     elif avg_delta_x < 0:
         print(f"{most_common_label} has moved OUT of the fridge")
+        test.delete_oldest_item(most_common_label)
     else:
         print("Movement inconclusive")
 
