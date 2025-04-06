@@ -223,7 +223,7 @@ function UserItems() {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-4 px-4 md:p-8">
-      <div className="-translate-y-6">
+      <div className="md:-translate-y-6">
         <Navbar/>
       </div>
       <div className="mb-5"/>

@@ -31,7 +31,7 @@ export default function Home() {
       <Navbar />
       <div className="min-h-screen p-8 pb-20 sm:p-20">
         <div className="grid grid-cols-2 gap-16 items-center justify-items-center font-[family-name:var(--font-geist-sans)]">
-          <div className="w-full h-full">
+          <div className="w-full h-full -translate-x-10 md:translate-x-0">
             <ThreeScene />
           </div>
           <div className="flex flex-col gap-[32px] items-center sm:items-start">
