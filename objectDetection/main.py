@@ -8,37 +8,28 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore 
 import test
+import base64
 
 
 
 
-# gemini firebase thing
 try:
-    # Path to your Service Account Key JSON file
-    CRED_PATH = "./fridge.json"  # <-- !! VERIFY THIS PATH !!
+    CRED_PATH = "./fridge.json"  
     cred = credentials.Certificate(CRED_PATH)
-    # Initialize the app (no databaseURL needed for Firestore)
     firebase_admin.initialize_app(cred)
     print("Firebase Admin SDK initialized successfully.")
 
-    # Get the Firestore client
     db_client = firestore.client()
     print("Firestore client obtained.")
 
-    # Define the collection and document for your fridge status
-    # You can change 'fridges' and 'main_fridge' if you like
     fridge_collection_name = 'fridges'
-    fridge_document_id = 'main_fridge' # ID for THIS specific fridge
-    # Get a reference to the specific document
     door_doc_ref = db_client.collection(fridge_collection_name).document(fridge_document_id)
     print(f"Firestore document reference created for: {door_doc_ref.path}")
-    # Define the field name within the document
     door_status_field = 'door_is_open'
 
 except ValueError as e:
     if "The default Firebase app already exists" in str(e):
         print("Firebase Admin SDK already initialized.")
-        # If already initialized, just get the client and reference again
         db_client = firestore.client()
         fridge_collection_name = 'fridges'
         fridge_document_id = 'main_fridge'
@@ -61,11 +52,22 @@ model = YOLO("./model/yolo11m.pt")
 camera = '/dev/video0'
 cap = cv2.VideoCapture(camera)
 DOOR_DELAY = 3
+experimental_bottle_recognition = True
 
 whitelist = {
     "banana", "apple", "sandwich", "orange", "broccoli", "carrot",
     "hot dog", "pizza", "donut", "cake", "bottle", "cup"
 }
+
+def encode_image_to_base64(image_np):
+    # Encode to JPEG format in memory (no file saved)
+    success, encoded_img = cv2.imencode(".jpg", image_np)
+    if not success:
+        raise ValueError("Failed to encode image")
+
+    # Convert to base64 string for GenAI or any HTTP upload
+    b64 = base64.b64encode(encoded_img.tobytes()).decode("utf-8")
+    return b64
 
 def isClosed(frame, threshold=2, required_black_ratio=0.7):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -74,45 +76,62 @@ def isClosed(frame, threshold=2, required_black_ratio=0.7):
     black_ratio = black_pixels / total_pixels
     return black_ratio >= required_black_ratio
 
+def get_top_3_images(data):
+    if not data:
+        return []
+
+    # Sort buffer by confidence, descending
+    sorted_data = sorted(data, key=lambda item: item[2], reverse=True)
+
+    # Extract top 3 (or fewer if not enough)
+    top_3 = sorted_data[:3]
+
+    # Return only cropped images
+    top_3_images = [entry[3] for entry in top_3]
+    return top_3_images
+
 def processBuffer(data):
     print("Processing buffer:", data)
     if not data:
         print("Buffer is empty.")
         return
 
-    # Step 1: Find the most common label
-    labels = [label for label, _ in data]
+    labels = [label for label, _, _, _ in data]
     most_common_label, _ = Counter(labels).most_common(1)[0]
 
-    # Step 2: Filter entries to only that label
-    filtered = [(cx, cy) for label, (cx, cy) in data if label == most_common_label]
+    filtered = [(cx, cy) for label, (cx, cy), _, _ in data if label == most_common_label]
 
     if len(filtered) < 2:
         print(f"Not enough data for '{most_common_label}' to calculate movement.")
         return
 
-    # Step 3: Compute average change in X position (Δx)
+    encoded_images=[]
+    if experimental_bottle_recognition and (most_common_label in {"cup", "bottle"}):
+        top_imgs = get_top_3_images(data)
+        for i, img in enumerate(top_imgs):
+            img_b64 = encode_image_to_base64(img)
+            encoded_images.append(img_b64)
+        #call ai functions
+
+
     deltas = [filtered[i+1][0] - filtered[i][0] for i in range(len(filtered)-1)]
     avg_delta_x = sum(deltas) / len(deltas)
 
-    # Output result
     print(f"Most common item: {most_common_label}")
-    print(f"avg_delta_x: {avg_delta_x}")
+    print(f"avg_delta_x: {avg_delta_x:.2f}")
+
     if avg_delta_x > 0:
-        print(f"{most_common_label} as moved in to the fridge")
+        print(f"{most_common_label} has moved INTO the fridge")
         test.add_item(most_common_label)
     elif avg_delta_x < 0:
-        print(f"{most_common_label} as moved out of the fridge")
+        print(f"{most_common_label} has moved OUT of the fridge")
     else:
-        print("inconlusive")
-
+        print("Movement inconclusive")
 
     
 
 def update_firestore_door_status(is_open):
     try:
-        # Use set with merge=True: Creates the document if it doesn't exist,
-        # or updates the specified field if it does exist without overwriting other fields.
         door_doc_ref.set({door_status_field: is_open}, merge=True)
         print(f"Firestore updated: Document '{door_doc_ref.id}' set {door_status_field} = {is_open}")
     except Exception as e:
@@ -156,7 +175,7 @@ while cap.isOpened():
         boxes = [box for box in r.boxes if model.names[int(box.cls)] in whitelist]
         if not boxes:
             continue
-
+        new_data_added = True
         best_box = max(boxes, key=lambda b: b.conf.item())
 
         cls_id = int(best_box.cls.item())
@@ -165,18 +184,22 @@ while cap.isOpened():
         cx, cy, _, _ = best_box.xywh.squeeze().tolist()
         coords = best_box.xyxy[0].tolist()
 
+        # Crop the image using YOLO bbox
+        x1, y1, x2, y2 = map(int, coords)
+        cropped_img = frame[y1:y2, x1:x2]  # Make sure x2 > x1 and y2 > y1
+
         detection_str = f"BEST: {label} with {conf:.2f} confidence at {coords} (center: {cx:.1f}, {cy:.1f})"
-        buffer.append((label, (cx, cy)))
-        new_data_added = True
+        print(detection_str)
+
+        # Add to buffer: label, (cx, cy), conf, and cropped image
+        buffer.append((label, (cx, cy), conf, cropped_img))
 
         print(f"test{(label, (cx, cy))}")
         print(detection_str)
 
-    # Update the last update time if new data was added
     if new_data_added:
         last_buffer_update = time.time()
 
-    # Check if it's been over 1 second since last update
     elif buffer and (time.time() - last_buffer_update) > 1.0:
         processBuffer(buffer)
         buffer.clear()
