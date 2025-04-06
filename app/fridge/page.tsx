@@ -339,6 +339,11 @@ useEffect(() => {
                   <CardDescription>
                     {getExpirationText(item.expiration)}
                   </CardDescription>
+                  {item.carbon &&
+                      <CardDescription className="text-xs">
+                        Carbon: {item.carbon}
+                      </CardDescription>
+                   }
                   <CardDescription className="text-xs">
                      Added: {(() => {
                        if (!item.date_added) return 'N/A';
@@ -346,12 +351,7 @@ useEffect(() => {
                        return isValid(parsedDate) ? format(parsedDate, 'MMM d, yyyy') : 'Invalid Date';
                      })()}
                    </CardDescription>
-                   
-                   {item.carbon &&
-                      <CardDescription className="text-xs">
-                        Carbon: {item.carbon}
-                      </CardDescription>
-                   }
+                           
                 </CardHeader>
                 <CardFooter className="pt-2">
                      <Button
@@ -370,77 +370,87 @@ useEffect(() => {
         )}
       </div>
       {auth.currentUser ? 
-      <Card className="mt-10">
-        <CardHeader>
-          <CardTitle>Manually Add Item</CardTitle>
-          <CardDescription>Enter the details of the item you want to add.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="newItemName">Name</Label>
-              <Input
-                id="newItemName"
-                type="text"
-                placeholder="e.g., Apple, Milk"
-                value={newItemName}
-                onChange={e => setNewItemName(e.target.value)}
-                required
-              />
+      <div className="flex flex-row w-full gap-5">
+        <Card className="mt-1 w-full">
+          <CardHeader>
+            <CardTitle>Manually Add Item</CardTitle>
+            <CardDescription>Enter the details of the item you want to add.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="newItemName">Name</Label>
+                <Input
+                  id="newItemName"
+                  type="text"
+                  placeholder="e.g., Apple, Milk"
+                  value={newItemName}
+                  onChange={e => setNewItemName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="newItemCalories">Calories</Label>
+                <Input
+                  id="newItemCalories"
+                  type="number"
+                  placeholder="e.g., 95"
+                  value={newItemCalories}
+                  onChange={e => setNewItemCalories(e.target.value)}
+                />
+              </div>
             </div>
-             <div className="space-y-2">
-              <Label htmlFor="newItemCalories">Calories</Label>
-              <Input
-                id="newItemCalories"
-                type="number"
-                placeholder="e.g., 95"
-                value={newItemCalories}
-                onChange={e => setNewItemCalories(e.target.value)}
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="newItemDateAdded">Date Added</Label>
+                <Input
+                  id="newItemDateAdded"
+                  type="date"
+                  value={newItemDateAdded}
+                  onChange={e => setNewItemDateAdded(e.target.value)}
+                  placeholder="YYYY-MM-DD"
+                />
+                <p className="text-xs text-muted-foreground">Defaults to today if left empty.</p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="newItemExpiration">Expiration Date</Label>
+                <Input
+                  id="newItemExpiration"
+                  type="date"
+                  placeholder="YYYY-MM-DD"
+                  value={newItemExpiration}
+                  onChange={e => setNewItemExpiration(e.target.value)}
+                />
+                  <p className="text-xs text-muted-foreground">Format: YYYY-MM-DD</p>
+              </div>
             </div>
-          </div>
-           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="newItemDateAdded">Date Added</Label>
-              <Input
-                id="newItemDateAdded"
-                type="date"
-                value={newItemDateAdded}
-                onChange={e => setNewItemDateAdded(e.target.value)}
-                placeholder="YYYY-MM-DD"
-              />
-               <p className="text-xs text-muted-foreground">Defaults to today if left empty.</p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="newItemExpiration">Expiration Date</Label>
-              <Input
-                id="newItemExpiration"
-                type="date"
-                placeholder="YYYY-MM-DD"
-                value={newItemExpiration}
-                onChange={e => setNewItemExpiration(e.target.value)}
-              />
-                 <p className="text-xs text-muted-foreground">Format: YYYY-MM-DD</p>
-            </div>
-           </div>
-            {/* <div className="space-y-2">
-              <Label htmlFor="newItemCarbon">Carbon Footprint</Label>
-              <Input
-                id="newItemCarbon"
-                type="text"
-                placeholder="e.g., 0.1 kg CO2e or 100"
-                value={newItemCarbon}
-                onChange={e => setNewItemCarbon(e.target.value)}
-              />
-            </div> */}
-        </CardContent>
-        <CardFooter>
-          <Button onClick={handleAddItem} disabled={!newItemName.trim()}>Add Item</Button>
-        </CardFooter>
-      </Card>:""}
+              {/* <div className="space-y-2">
+                <Label htmlFor="newItemCarbon">Carbon Footprint</Label>
+                <Input
+                  id="newItemCarbon"
+                  type="text"
+                  placeholder="e.g., 0.1 kg CO2e or 100"
+                  value={newItemCarbon}
+                  onChange={e => setNewItemCarbon(e.target.value)}
+                />
+              </div> */}
+          </CardContent>
+          <CardFooter>
+            <Button onClick={handleAddItem} disabled={!newItemName.trim()}>Add Item</Button>
+          </CardFooter>
+        </Card>
+        <Card className="mt-1 w-full">
+          <CardHeader>
+              <CardTitle>Recommended Recipe</CardTitle>
+              <CardDescription>Clear out some of the old stuff in the fridge!</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4"><Gemini/></CardContent>
+        </Card>
+      </div>
+      :""}
 
 
-      <Gemini />
+      
     </div>
   );
 }
