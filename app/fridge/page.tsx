@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Search, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import Navbar from "@/components/navbar";
+import Gemini from "./gemini";
 
 interface Item {
   id: string;
@@ -437,6 +438,9 @@ useEffect(() => {
           <Button onClick={handleAddItem} disabled={!newItemName.trim()}>Add Item</Button>
         </CardFooter>
       </Card>:""}
+
+
+      <Gemini />
     </div>
   );
 }
