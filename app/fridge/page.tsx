@@ -86,49 +86,47 @@ function UserItems() {
 //     return () => unsubscribe();
 //   }, [fetchItems]);
 useEffect(() => {
-       let unsubscribeFirestore = () => {}; // Placeholder for cleanup function
+       let unsubscribeFirestore = () => {}; 
     
-       // Listen for auth changes directly
        const unsubscribeAuth = auth.onAuthStateChanged(user => {
-         // Clean up previous Firestore listener before setting up a new one or if logging out
+        
          unsubscribeFirestore();
     
          if (user) {
-           setLoading(true); // Start loading when user is confirmed
+           setLoading(true); 
            const userId = user.uid;
            setUserName(user.displayName || user.email);
            setUserPhotoURL(user.photoURL);
            const itemsCollectionRef = collection(db, 'users', userId, 'items');
     
-           // Set up the real-time listener
+     
            unsubscribeFirestore = onSnapshot(itemsCollectionRef, (snapshot) => {
              const itemsData: Item[] = snapshot.docs.map(doc => ({
                id: doc.id,
                ...doc.data()
              } as Item));
-             setItems(itemsData); // Update state with real-time data
-             setLoading(false); // Stop loading after data is received
+             setItems(itemsData); 
+             setLoading(false); 
            }, (error) => {
              console.error("Error listening to Firestore:", error);
-             setItems([]); // Clear items on error
+             setItems([]); 
              setLoading(false);
            });
     
          } else {
-           // No user logged in
            setItems([]);
            setUserName(null);
            setUserPhotoURL(null);
-           setLoading(false); // Ensure loading is false if logged out
+           setLoading(false); 
          }
        });
     
-       // Cleanup function for the effect
+   
        return () => {
-         unsubscribeAuth(); // Unsubscribe from auth listener
-         unsubscribeFirestore(); // Unsubscribe from Firestore listener
+         unsubscribeAuth(); 
+         unsubscribeFirestore(); 
        };
-     }, [auth, db]); // Re-run effect if auth or db instance changes
+     }, [auth, db]); 
     
 
   useEffect(() => {

@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono,Merriweather_Sans } from "next/font/google";
 import { AuthProvider } from "@/context/auth-context"
 import "./globals.css";
+
+const merriweather = Merriweather_Sans({
+  subsets: ["latin"],
+  variable: "--font-merriweather-sans",
+  display: "swap",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
+        className={`${merriweather.variable} ${geistMono.variable} antialiased dark`}
       >
         <AuthProvider>{children}</AuthProvider>
       </body>
