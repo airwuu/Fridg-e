@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { LogOut } from "lucide-react"
+import Image from "next/image"
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -56,8 +57,12 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between w-full">
-        <div className="pl-5 flex items-center gap-2">
-          <span className="text-lg font-semibold">fridge-chan</span>
+        <div className="pl-5 flex items-center gap-2 py-3">
+          {/* <span className="text-lg font-semibold">fridge-chan</span> */}
+          <a className="flex" href="/">
+          <Image src="/fridge.png" alt="Fridg-e" width="50" height="50"/>
+          <Image src="/title.png" alt="" width="130" height="50"/>
+          </a>
         </div>
         <div className="pr-5">
           {user ? (
