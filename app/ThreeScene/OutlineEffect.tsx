@@ -30,7 +30,7 @@ const OutlineEffect = () => {
         blendFunction={BlendFunction.SCREEN}
         edgeStrength={5}
         pulseSpeed={0}
-        visibleEdgeColor={0xffffff}
+        visibleEdgeColor={0x7f7f7f}
         hiddenEdgeColor={0x000000}
         width={size.width}
         height={size.height}
