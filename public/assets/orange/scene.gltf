@@ -1,0 +1,313 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 545,
+      "max": [
+        15.323643684387207,
+        16.915937423706055,
+        15.521316528320313
+      ],
+      "min": [
+        -15.525371551513672,
+        -14.852616310119629,
+        -15.347002029418945
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 6540,
+      "componentType": 5126,
+      "count": 545,
+      "max": [
+        0.9925352334976196,
+        0.9998299479484558,
+        0.9985736608505249
+      ],
+      "min": [
+        -0.9985259771347046,
+        -0.9996047019958496,
+        -0.9988856315612793
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 545,
+      "max": [
+        0.9842252731323242,
+        0.9823140501976013
+      ],
+      "min": [
+        0.024113720282912254,
+        0.02378132753074169
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 1953,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 13080,
+      "componentType": 5126,
+      "count": 187,
+      "max": [
+        10.044492721557617,
+        20.115665435791016,
+        4.895655632019043
+      ],
+      "min": [
+        -3.427417278289795,
+        9.779730796813965,
+        -2.727205276489258
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 15324,
+      "componentType": 5126,
+      "count": 187,
+      "max": [
+        0.9928783774375916,
+        0.9950104355812073,
+        0.9985736608505249
+      ],
+      "min": [
+        -0.9663882255554199,
+        -0.9808469414710999,
+        -0.9993593692779541
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 4360,
+      "componentType": 5126,
+      "count": 187,
+      "max": [
+        0.9843338131904602,
+        0.9823140501976013
+      ],
+      "min": [
+        0.19511227309703827,
+        0.32076552510261536
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 7812,
+      "componentType": 5125,
+      "count": 531,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "negar (https://sketchfab.com/negar)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/orange-c523d1ef93f34b5ab4db0e7ec1bd3247",
+      "title": "Orange"
+    },
+    "generator": "Sketchfab-12.65.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 9936,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 5856,
+      "byteOffset": 9936,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 17568,
+      "byteOffset": 15792,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 33360,
+      "uri": "scene.bin"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "Orange",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.588,
+          0.165396,
+          0.0,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.942308933
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Green",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.0430342,
+          0.152809,
+          0.0176664,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.9706762809
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Orange_Orange_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Orange_Green_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 5,
+            "POSITION": 4,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "d4928a80095e4a79b3ff938adacb75b3.fbx"
+    },
+    {
+      "children": [
+        3
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4,
+        5
+      ],
+      "matrix": [
+        6.451600074768066,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        6.45160007476798,
+        1.0510991948419256e-06,
+        0.0,
+        0.0,
+        -1.0510991948419256e-06,
+        6.45160007476798,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Orange"
+    },
+    {
+      "mesh": 0,
+      "name": "Orange_Orange_0"
+    },
+    {
+      "mesh": 1,
+      "name": "Orange_Green_0"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

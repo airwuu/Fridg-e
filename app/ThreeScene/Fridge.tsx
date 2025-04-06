@@ -29,7 +29,7 @@ const Fridge = () => {
       const elapsed = timestamp - start;
       const progress = Math.min(elapsed / duration, 1);
       const easedProgress = easeInOutQuad(progress);
-      setDoorRotation(-Math.PI / 2 * easedProgress);
+      setDoorRotation(-Math.PI / 1.3 * easedProgress);
       if (progress < 1) {
         requestAnimationFrame(animate);
       }
