@@ -58,7 +58,7 @@ except Exception as e:
 
 
 model = YOLO("./model/yolo11m.pt")
-camera = '/dev/video0'
+camera = '/dev/video2'
 cap = cv2.VideoCapture(camera)
 DOOR_DELAY = 3
 
