@@ -48,3 +48,4 @@ next-env.d.ts
 *.whl
 ./objectDetection/models
 
+objectDetection/fridge.json
