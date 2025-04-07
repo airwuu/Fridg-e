@@ -36,7 +36,7 @@ def analyze_images_with_gemini(image_list, api_key, isadd):
     response = model.generate_content(contents)
     print(f"TEST:{response}")
     if isadd:
-        previous_drinks.append(response)
+        previous_drinks.append(response.strip())
     else:
-        previous_drinks.remove(response)
+        previous_drinks.remove(response.strip())
     return response.text 
