@@ -21,7 +21,7 @@ def analyze_images_with_gemini(image_list, api_key, isadd):
 
     if isadd:
          contents = [
-                 {"text": "what is this bottle/can/drink? only give a short response to name the bottle/can/drink. The response will be added to a database as a value. If you are unsure or can not make it out give the response: bottle"}
+                 {"text": "what is this bottle/can/drink? only give a short response to name the bottle/can/drink. The response will be added to a database as a value. If you are really unsure give the response: bottle"}
             ]
     else:
         contents = [
