@@ -95,13 +95,9 @@ def processBuffer(data):
         print(f"Not enough data for '{most_common_label}' to calculate movement.")
         return
 
+    top_imgs =0
     if experimental_bottle_recognition and (most_common_label in {"cup", "bottle"}):
         top_imgs = get_top_3_images(data)
-        if top_imgs:
-            result = bottleAI.analyze_images_with_gemini(top_imgs, GEM_API_KEY)
-            most_common_label = result
-            print(result)
-
 
     deltas = [filtered[i+1][0] - filtered[i][0] for i in range(len(filtered)-1)]
     avg_delta_x = sum(deltas) / len(deltas)
@@ -110,9 +106,17 @@ def processBuffer(data):
     print(f"avg_delta_x: {avg_delta_x:.2f}")
 
     if avg_delta_x > 0:
+        if top_imgs:
+            result = bottleAI.analyze_images_with_gemini(top_imgs, GEM_API_KEY, True)
+            most_common_label = result
+            print(f"gem say : {result}")
         print(f"{most_common_label} has moved INTO the fridge")
         test.add_item(most_common_label)
     elif avg_delta_x < 0:
+        if top_imgs:
+            result = bottleAI.analyze_images_with_gemini(top_imgs, GEM_API_KEY, False)
+            most_common_label = result
+            print(f"gem say : {result}")
         print(f"{most_common_label} has moved OUT of the fridge")
     else:
         print("Movement inconclusive")
