@@ -12,8 +12,6 @@ import bottleAI
 import os
 from dotenv import load_dotenv
 
-
-
 load_dotenv()
 GEM_API_KEY = os.getenv('NEXT_PUBLIC_GEMINI_API_KEY')
 try:
@@ -52,7 +50,7 @@ except Exception as e:
 
 
 model = YOLO("./model/yolo11m.pt")
-camera = '/dev/video0'
+camera = '/dev/video2'
 cap = cv2.VideoCapture(camera)
 DOOR_DELAY = 2
 experimental_bottle_recognition = True
