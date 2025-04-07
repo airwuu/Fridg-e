@@ -118,6 +118,7 @@ def processBuffer(data):
             most_common_label = result
             print(f"gem say : {result}")
         print(f"{most_common_label} has moved OUT of the fridge")
+        test.delete_oldest_item(most_common_label)
     else:
         print("Movement inconclusive")
 

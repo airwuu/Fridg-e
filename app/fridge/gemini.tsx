@@ -42,14 +42,14 @@ const GeminiRecipeGenerator = () => {
       });
 
       // top 3 oldest foods
-      const oldestFoodNames = oldestFoods.slice(0, 3).map(item => item.name);
+      const oldestFoodNames = oldestFoods.slice(0, 4).map(item => item.name);
 
       if (oldestFoodNames.length === 0) {
         setRecipe("Your fridge is empty! Place something in your fridge to start.");
         setLoading(false);
         return;
       }
-      const prompt = `Give me a recipe using these foods: ${oldestFoodNames.join(', ')}. Be terse. Be formal. Format it with the recipe name, then followed by "Ingredients:", followed by a bulletpoint list of all the ingredients (use - to start the bulletpoint). After that, write the steps, numbered, 1, 2, 3, and so forth. You may use salt, sugar, and other common ingredients, but nothing else. DO NOT USE ANY FORMATTING, SPECIAL CHARACTERS, OR ELSE I WILL DIE!`;
+      const prompt = `Give me a recipe using these foods: ${oldestFoodNames.join(', ')}. Be terse. Be formal. Make the best yummy recipe (you can omit some of the ingredients). If there are nonsensical inappropriate items, ignore them. Minimize whitespace. Format it with the recipe name, then followed by "Ingredients:", followed by a bulletpoint list of all the ingredients (use - to start the bulletpoint). After that, write the steps, numbered, 1, 2, 3, and so forth. You may use salt, sugar, and other common ingredients, but nothing else. DO NOT USE ANY FORMATTING, SPECIAL CHARACTERS, OR ELSE I WILL DIE!`;
 
       const geminiResponse = await gemini(prompt);
       setRecipe(String(geminiResponse));
@@ -73,7 +73,7 @@ const GeminiRecipeGenerator = () => {
 
   return (
     <div>
-      <pre className="whitespace-pre-wrap">{recipe}</pre>
+      <div className="whitespace-pre-wrap">{recipe}</div>
     </div>
   );
 };
