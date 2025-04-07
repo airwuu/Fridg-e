@@ -34,9 +34,13 @@ def analyze_images_with_gemini(image_list, api_key, isadd):
         contents.append({"inline_data": encode_img_for_gemini(img)})
 
     response = model.generate_content(contents)
-    print(f"TEST:{response}")
+    response_text = response.text.strip()
+
     if isadd:
-        previous_drinks.append(response.strip())
+        previous_drinks.append(response_text)
     else:
-        previous_drinks.remove(response.strip())
-    return response.text 
+        if response_text in previous_drinks:
+            pass
+        previous_drinks.remove(response_text)
+
+    return response_text
