@@ -40,7 +40,6 @@ def analyze_images_with_gemini(image_list, api_key, isadd):
         previous_drinks.append(response_text)
     else:
         if response_text in previous_drinks:
-            pass
-        previous_drinks.remove(response_text)
+            previous_drinks.remove(response_text)
 
     return response_text
