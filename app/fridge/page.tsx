@@ -325,7 +325,7 @@ useEffect(() => {
                     <CardTitle className="text-lg">{item.name}</CardTitle>
                     {item.calories && (
                        <span className="text-sm text-muted-foreground whitespace-nowrap">
-                         {item.calories} cal
+                         {item.calories} cals
                     {/* <CardDescription className="text-xs">
                      Added: {(() => {
                        if (!item.date_added) return 'N/A';
@@ -341,7 +341,7 @@ useEffect(() => {
                   </CardDescription>
                   {item.carbon &&
                       <CardDescription className="text-xs">
-                        Carbon: {item.carbon}
+                        Carbon Footprint: {item.carbon} kg of carbon
                       </CardDescription>
                    }
                   <CardDescription className="text-xs">
