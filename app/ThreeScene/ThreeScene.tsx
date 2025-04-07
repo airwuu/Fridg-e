@@ -25,6 +25,7 @@ interface Item {
   [key: string]: any;
 }
 
+const sodaKeywords = ["soda", "drink", "ghost", "red", "bull", "coke", "pepsi", "fanta", "dew", "cola", "energy", "celsius", "baja", "blast", "arctic"];
 
 const ThreeScene = () => {
   const [userLoaded, setUserLoaded] = useState(false);
@@ -92,7 +93,12 @@ const ThreeScene = () => {
 
   const renderItemComponent = (item: { id: string; name?: string }) => {
     if (!item.name) return null;
+
     const itemName = item.name.toLowerCase();
+
+    const isSoda = sodaKeywords.some(keyword => itemName.includes(keyword));
+    if (isSoda) return <Soda key={item.id} />;
+
     switch (itemName) {
       case 'banana':
         return <Banana key={item.id} />;
@@ -102,10 +108,8 @@ const ThreeScene = () => {
         return <Orange key={item.id} />;
       case 'pizza':
         return <Pizza key={item.id} />;
-      case 'water':
+      case 'bottle':
         return <Water key={item.id} />;
-      case 'soda': 
-        return <Soda key={item.id} />
       default:
         return null;
     }
