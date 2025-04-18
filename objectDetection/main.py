@@ -14,9 +14,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 GEM_API_KEY = os.getenv('NEXT_PUBLIC_GEMINI_API_KEY')
+FIREBASE_CRED = "./fridge.json"  
+
+## firebase loging things
 try:
-    CRED_PATH = "./fridge.json"  
-    cred = credentials.Certificate(CRED_PATH)
+    cred = credentials.Certificate(FIREBASE_CRED)
     firebase_admin.initialize_app(cred)
     print("Firebase Admin SDK initialized successfully.")
 
