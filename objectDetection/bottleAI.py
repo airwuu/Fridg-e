@@ -7,10 +7,16 @@ from dotenv import load_dotenv
 
 
 load_dotenv()
-
 API_KEY = os.getenv("NEXT_PUBLIC_GEMINI_API_KEY")
 previous_drinks =[]
+drink_list = "./drinks.txt"
 client = genai.Client(api_key=API_KEY)
+
+if os.path.exists(drink_list):
+    with open(drink_list, "r") as f:
+        previous_drinks = [line.strip() for line in f if line.strip()]
+else:
+    previous_drinks = []
 
 
 def encode_img_for_gemini(image):
@@ -45,6 +51,11 @@ def analyze_images_with_gemini(image_list,isadd):
     else:
         if response in previous_drinks:
             previous_drinks.remove(response)
+
+    with open(drink_list, "w") as f:
+        for drink in previous_drinks:
+            f.write(f"{drink}\n")
+
 
     return response
 

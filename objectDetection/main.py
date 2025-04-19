@@ -1,6 +1,5 @@
 import asyncio
 import cv2
-import streamlit as st
 import time
 import numpy as np
 from ultralytics import YOLO
@@ -22,6 +21,7 @@ model = YOLO("./model/yolo11m.pt")
 camera = '/dev/video0'
 cap = cv2.VideoCapture(camera)
 DOOR_DELAY = 2
+BUFFER_CUT_OFF_TIME = 2.0
 experimental_bottle_recognition = True
 whitelist = {
     "banana", "apple", "sandwich", "orange", "carrot",
@@ -53,11 +53,9 @@ except ValueError as e:
         door_status_field = 'door_is_open'
     else:
         print(f"Error initializing Firebase Admin SDK: {e}")
-        st.error(f"Error initializing Firebase: {e}")
         exit()
 except Exception as e:
     print(f"An unexpected error occurred during Firebase initialization: {e}")
-    st.error(f"Firebase initialization failed: {e}")
     exit()
 
 
@@ -144,7 +142,6 @@ async def main():
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
-            st.warning("Failed to read from /dev/video0")
             break
 
         new_status = not isClosed(frame)  
@@ -195,9 +192,10 @@ async def main():
         if new_data_added:
             last_buffer_update = time.time()
 
-        elif buffer and (time.time() - last_buffer_update) > 1.0:
+        elif buffer and (time.time() - last_buffer_update) > BUFFER_CUT_OFF_TIME:
             processBuffer(buffer)
             buffer.clear()
+        await asyncio.sleep(0.1)
      
 
     print("cap was closed")
