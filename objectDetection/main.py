@@ -1,3 +1,4 @@
+import asyncio
 import cv2
 import streamlit as st
 import time
@@ -7,7 +8,7 @@ from collections import Counter
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore 
-import test
+import shelfLifeAI
 import bottleAI
 import os
 from dotenv import load_dotenv
@@ -15,6 +16,18 @@ from dotenv import load_dotenv
 load_dotenv()
 GEM_API_KEY = os.getenv('NEXT_PUBLIC_GEMINI_API_KEY')
 FIREBASE_CRED = "./fridge.json"  
+
+
+model = YOLO("./model/yolo11m.pt")
+camera = '/dev/video0'
+cap = cv2.VideoCapture(camera)
+DOOR_DELAY = 2
+experimental_bottle_recognition = True
+whitelist = {
+    "banana", "apple", "sandwich", "orange", "carrot",
+    "pizza", "cake", "bottle", "cup"
+}
+
 
 ## firebase loging things
 try:
@@ -51,16 +64,6 @@ except Exception as e:
 # =================================== stuff here now
 
 
-model = YOLO("./model/yolo11m.pt")
-camera = '/dev/video2'
-cap = cv2.VideoCapture(camera)
-DOOR_DELAY = 2
-experimental_bottle_recognition = True
-
-whitelist = {
-    "banana", "apple", "sandwich", "orange", "broccoli", "carrot",
-    "hot dog", "pizza", "donut", "cake", "bottle", "cup"
-}
 
 def isClosed(frame, threshold=2, required_black_ratio=0.7):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -107,21 +110,20 @@ def processBuffer(data):
 
     if avg_delta_x > 0:
         if top_imgs:
-            result = bottleAI.analyze_images_with_gemini(top_imgs, GEM_API_KEY, True)
+            result = bottleAI.analyze_images_with_gemini(top_imgs, True)
             most_common_label = result
             print(f"gem say : {result}")
         print(f"{most_common_label} has moved INTO the fridge")
-        test.add_item(most_common_label)
+        asyncio.create_task(shelfLifeAI.add_item(most_common_label))
     elif avg_delta_x < 0:
         if top_imgs:
-            result = bottleAI.analyze_images_with_gemini(top_imgs, GEM_API_KEY, False)
+            result = bottleAI.analyze_images_with_gemini(top_imgs, False)
             most_common_label = result
             print(f"gem say : {result}")
         print(f"{most_common_label} has moved OUT of the fridge")
-        test.delete_oldest_item(most_common_label)
+        asyncio.create_task(shelfLifeAI.delete_oldest_item(most_common_label))
     else:
         print("Movement inconclusive")
-
     
 
 def update_firestore_door_status(is_open):
@@ -132,68 +134,73 @@ def update_firestore_door_status(is_open):
         print(f"Error updating Firestore: {e}")
 
 
-doorOpen = False
-buffer =[]
-last_buffer_update = time.time()
-new_data_added =False
+async def main():
+    doorOpen = False
+    buffer =[]
+    last_buffer_update = time.time()
+    new_data_added =False
 
 
-while cap.isOpened():
-    ret, frame = cap.read()
-    if not ret:
-        st.warning("Failed to read from /dev/video0")
-        break
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            st.warning("Failed to read from /dev/video0")
+            break
 
-    new_status = not isClosed(frame)  
-    if new_status != doorOpen:
-        doorOpen = new_status
-        update_firestore_door_status(new_status)
-        if not doorOpen:    
-            print("Door just closed")
+        new_status = not isClosed(frame)  
+        if new_status != doorOpen:
+            doorOpen = new_status
+            update_firestore_door_status(new_status)
+            if not doorOpen:    
+                print("Door just closed")
+                buffer.clear()
+                new_data_added = False
+                update_firestore_door_status(doorOpen)
+                continue
+            else:
+                print("Door just opened")
+                time.sleep(DOOR_DELAY)  
+                continue
+                
+        if not doorOpen:
+            continue  
+
+        result = model.predict(frame, conf=0.45, verbose=False)
+        new_data_added = False
+
+        for r in result:
+            boxes = [box for box in r.boxes if model.names[int(box.cls)] in whitelist]
+            if not boxes:
+                continue
+            new_data_added = True
+            best_box = max(boxes, key=lambda b: b.conf.item())
+
+            cls_id = int(best_box.cls.item())
+            label = model.names[cls_id]
+            conf = best_box.conf.item()
+            cx, cy, _, _ = best_box.xywh.squeeze().tolist()
+            coords = best_box.xyxy[0].tolist()
+
+            x1, y1, x2, y2 = map(int, coords)
+            cropped_img = frame[y1:y2, x1:x2]  # Make sure x2 > x1 and y2 > y1
+
+            detection_str = f"BEST: {label} with {conf:.2f} confidence at {coords} (center: {cx:.1f}, {cy:.1f})"
+            print(detection_str)
+
+            buffer.append((label, (cx, cy), conf, cropped_img))
+
+            print(f"test {(label, (cx, cy))}")
+            print(detection_str)
+
+        if new_data_added:
+            last_buffer_update = time.time()
+
+        elif buffer and (time.time() - last_buffer_update) > 1.0:
+            processBuffer(buffer)
             buffer.clear()
-            new_data_added = False
-            update_firestore_door_status(doorOpen)
-            continue
-        else:
-            print("Door just opened")
-            time.sleep(DOOR_DELAY)  
-            continue
-            
-    if not doorOpen:
-        continue  
+     
 
-    result = model.predict(frame, conf=0.45, verbose=False)
-    new_data_added = False
+    print("cap was closed")
+    cap.release()
 
-    for r in result:
-        boxes = [box for box in r.boxes if model.names[int(box.cls)] in whitelist]
-        if not boxes:
-            continue
-        new_data_added = True
-        best_box = max(boxes, key=lambda b: b.conf.item())
-
-        cls_id = int(best_box.cls.item())
-        label = model.names[cls_id]
-        conf = best_box.conf.item()
-        cx, cy, _, _ = best_box.xywh.squeeze().tolist()
-        coords = best_box.xyxy[0].tolist()
-
-        x1, y1, x2, y2 = map(int, coords)
-        cropped_img = frame[y1:y2, x1:x2]  # Make sure x2 > x1 and y2 > y1
-
-        detection_str = f"BEST: {label} with {conf:.2f} confidence at {coords} (center: {cx:.1f}, {cy:.1f})"
-        print(detection_str)
-
-        buffer.append((label, (cx, cy), conf, cropped_img))
-
-        print(f"test{(label, (cx, cy))}")
-        print(detection_str)
-
-    if new_data_added:
-        last_buffer_update = time.time()
-
-    elif buffer and (time.time() - last_buffer_update) > 1.0:
-        processBuffer(buffer)
-        buffer.clear()
- 
-cap.release()
+asyncio.run(main())
